@@ -1,0 +1,3 @@
+version: "1"
+domain: ibmcloud.ibm.com
+repo: github.com/ibm/admission-control
