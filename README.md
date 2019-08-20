@@ -12,6 +12,7 @@ To install admission control, run the following script:
 ```
 curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/install.sh | bash 
 ```
+
 This will install the latest admission control server on your cluster under namespace `admission-control`. The following table lists all the resources deployed including those for webhook registration and for validation rule configurations. 
 
 |Name  |      Kind      |  Namespace | Comment |
@@ -30,14 +31,14 @@ This will install the latest admission control server on your cluster under name
 
 View logs to confirm installation:
 
-    ```
-    kubectl logs --follow admission-control-0 -n  admission-control
-    ```
+```
+kubectl logs --follow admission-control-0 -n  admission-control
+```
     
-    The log would show something like this:
-    
-    ```
-    {"level":"info","ts":1566316905.0751424,"logger":"entrypoint","msg":"setting up client for manager"}
+The log would show something like this:
+
+```
+{"level":"info","ts":1566316905.0751424,"logger":"entrypoint","msg":"setting up client for manager"}
 {"level":"info","ts":1566316905.0753875,"logger":"entrypoint","msg":"setting up manager"}
 {"level":"info","ts":1566316905.4753027,"logger":"entrypoint","msg":"Registering Components."}
 {"level":"info","ts":1566316905.4753418,"logger":"entrypoint","msg":"Starting the webwook."}
@@ -50,7 +51,8 @@ View logs to confirm installation:
 {"level":"info","ts":1566316905.4757433,"logger":"entrypoint","msg":"Starting the Cmd."}
 {"level":"info","ts":1566316905.5762658,"logger":"kubebuilder.webhook","msg":"installing webhook configuration in cluster"}
 {"level":"info","ts":1566316906.2954004,"logger":"kubebuilder.webhook","msg":"starting the webhook server."}
-    ```
+```
+
 
 ## 2. Uninstall
 
@@ -69,4 +71,3 @@ curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/uni
 * **Validation for Labels**
 
 
- 
