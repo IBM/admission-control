@@ -1,82 +1,25 @@
-#apiVersion: v1
-#kind: Namespace
-#metadata:
-#  labels:
-#    controller-tools.k8s.io: "1.0"
-#  name: system
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: labels-config
-  namespace: system
-data:
-  labels: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","labels":["ibmcloud.ibm.com/instance","ibmcloud.ibm.com/name"]}]'
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: immutables-config
-  namespace: system
-data:
-  immutables: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.BindingFrom.Name","Spec.IndexName","Spec.NumberOfShards","Spec.NumberOfReplicas"]},{"kind":"Service","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.Plan","Spec.ServiceClass"]},{"kind":"Binding","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.Role","Spec.ServiceNamespace","Spec.ServiceName"]}]'
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: validate-wh-config
-  namespace: system
-data:
-  config: '{"name": "validating-wh-config", "rules": [{"operations": ["CREATE", "UPDATE"], "apiGroups": ["ibmcloud.ibm.com"], "apiVersions": ["v1alpha1"], "resources": ["services", "bindings", "esindices", "topics"]}]}'
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mutate-wh-config
-  namespace: system
-data:
-#  config: '{"name": "mutating-wh-config", "rules": [{"operations": [], "apiGroups": [], "apiVersions": [], "resources": []}]}'
-  config: '{"name": "mutating-wh-config", "rules": [{"operations": ["CREATE", "UPDATE"], "apiGroups": ["ibmcloud.ibm.com"], "apiVersions": ["*"], "resources": ["*"]},{"operations": ["CREATE"], "apiGroups": ["ibmcloud.ibm.com"], "apiVersions": ["v1alpha1"], "resources": ["bucket"]}]}'
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: admission-control-service
-  namespace: system
-  labels:
-    control-plane: controller-manager
-    controller-tools.k8s.io: "1.0"
-    app: admission-control
-spec:
-  selector:
-    control-plane: controller-manager
-    controller-tools.k8s.io: "1.0"
-    app: admission-control
-  ports:
-  - port: 443
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: admission-control
-  namespace: system
+  namespace: admission-control
   labels:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
-    app: admission-control
+    app.kubernetes.io/name: admission-control
 spec:
   selector:
     matchLabels:
       control-plane: controller-manager
       controller-tools.k8s.io: "1.0"
-      app: admission-control
+      app.kubernetes.io/name: admission-control
   serviceName: admission-control-service
   template:
     metadata:
       labels:
         control-plane: controller-manager
         controller-tools.k8s.io: "1.0"
-        app: admission-control
+        app.kubernetes.io/name: admission-control
     spec:
       containers:
       - command:
@@ -94,15 +37,14 @@ spec:
         - name: WEBHOOK_SERVICE_NAME
           value: admission-control-service
         - name: CERT_DIR
-          value: /tmp/cert
-        # enable admission control         
+          value: /tmp/cert      
         # enable label validation in admission control
         - name: ADMISSION_CONTROL_LABELS
           value: "false"            
         # enable immutable validation in admission control
         - name: ADMISSION_CONTROL_IMMUTABLES
           value: "true"
-         # enable mutation  
+         # enable mutation webhook
         - name: ADMISSION_CONTROL_MUTATION
           value: "true"            
         resources:
@@ -133,6 +75,7 @@ spec:
           mountPath: /etc/config/mutate-wh
           readOnly: true         
       terminationGracePeriodSeconds: 10
+      serviceAccountName: admission-control
       volumes:
       - name: cert
         secret:
@@ -150,9 +93,3 @@ spec:
       - name: config-mutate-wh-volume
         configMap:
           name: mutate-wh-config
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: admission-webhook-certs
-  namespace: system

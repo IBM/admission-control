@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: validate-wh-config
+  namespace: admission-control
+  labels:
+    app.kubernetes.io/name: admission-control
+data:
+  config: '{"name": "validating-webhook", "rules": [{"operations": ["CREATE", "UPDATE"], "apiGroups": ["ibmcloud.ibm.com"], "apiVersions": ["v1alpha1"], "resources": ["services", "bindings", "esindices", "topics"]}]}'

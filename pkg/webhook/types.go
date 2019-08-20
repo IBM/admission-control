@@ -20,6 +20,12 @@ type AdmissionWhConfig struct {
 	Rules []admissionregistrationv1beta1.RuleWithOperations `json:",inline" protobuf:"bytes,2,opt,name=rule"`
 }
 
+// validatingWebhookName - default name for validatingwebhookconfiguration
+const validatingWebhookName = "validating-webhook"
+
+// mutatingWebhookName - default name for mutatingwebhookconfiguration
+const mutatingWebhookName = "mutating-webhook"
+
 // LabelsConfigPath is path where the ConfigMap is mounted for the required labels
 const LabelsConfigPath = "/etc/config/labels/labels"
 

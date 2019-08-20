@@ -66,27 +66,28 @@ func startWebhookServer(mgr manager.Manager) error {
 
 	var rules []admissionregistrationv1beta1.RuleWithOperations
 	var whV, whM *admission.Webhook
+	var whVName, whMName string
 
 	validateConfig, err := getAdmissionWhConfig(ValidateWhConfigPath)
 	if err != nil {
 		return fmt.Errorf("failed when read webhook configuration configmap at %v. error: ", ValidateWhConfigPath)
 	}
+	whVName = validateConfig.Name
 	rules = checkRules(validateConfig.Rules)
 	if rules != nil {
-		logt.Info("validate rules", "len", len(rules), "rules", rules)
 		whV, err = buildWebhook(mgr, "custom.admission.control", "/validate", admissiontypes.WebhookTypeValidating, rules)
 	}
 
-	var mutateConfig AdmissionWhConfig
 	if os.Getenv("ADMISSION_CONTROL_MUTATION") == "true" {
 		mutateConfig, err := getAdmissionWhConfig(MutateWhConfigPath)
 		if err != nil {
 			logt.Info("no admission webhook configuration configmap is found at %v", MutateWhConfigPath)
-		}
-		rules = checkRules(mutateConfig.Rules)
-		if rules != nil {
-			logt.Info("mutate rules", "len", len(rules), "rules", rules)
-			whM, err = buildWebhook(mgr, "custom.admission.control", "/mutate", admissiontypes.WebhookTypeMutating, rules)
+		} else {
+			whMName = mutateConfig.Name
+			rules = checkRules(mutateConfig.Rules)
+			if rules != nil {
+				whM, err = buildWebhook(mgr, "custom.admission.control", "/mutate", admissiontypes.WebhookTypeMutating, rules)
+			}
 		}
 	}
 
@@ -125,7 +126,7 @@ func startWebhookServer(mgr manager.Manager) error {
 				Selectors: map[string]string{
 					"control-plane":           "controller-manager",
 					"controller-tools.k8s.io": "1.0",
-					"app": "admission-control",
+					"app.kubernetes.io/name":  "admission-control",
 				},
 			},
 		},
@@ -135,13 +136,13 @@ func startWebhookServer(mgr manager.Manager) error {
 		return err
 	}
 
-	svr.ValidatingWebhookConfigName = "validating-webhook"
-	svr.MutatingWebhookConfigName = "mutating-webhook"
-	if len(validateConfig.Name) != 0 {
-		svr.ValidatingWebhookConfigName = validateConfig.Name
+	svr.ValidatingWebhookConfigName = validatingWebhookName
+	svr.MutatingWebhookConfigName = mutatingWebhookName
+	if whVName != "" {
+		svr.ValidatingWebhookConfigName = whVName
 	}
-	if len(mutateConfig.Name) != 0 {
-		svr.MutatingWebhookConfigName = mutateConfig.Name
+	if whMName != "" {
+		svr.MutatingWebhookConfigName = whMName
 	}
 	logt.Info("webhook names", "mutate", svr.MutatingWebhookConfigName, "validate", svr.ValidatingWebhookConfigName)
 
@@ -217,7 +218,6 @@ func buildWebhook(mgr manager.Manager, name string, path string, whType admissio
 	default:
 		whBuilder.Rules(rules[0], rules[1], rules[2], rules[3], rules[4])
 	}
-	logt.Info("buildWebhook", "rules", whBuilder)
 	wh, err := whBuilder.Build()
 	if err != nil {
 		logt.Error(err, "failed to create Mutating webhook ")

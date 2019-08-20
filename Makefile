@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= lauratest/admission-control
+IMG ?= cloudoperators/admission-control
 TAG ?= 0.1.0
 
 all: test manager
