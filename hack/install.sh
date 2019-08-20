@@ -22,18 +22,15 @@ RELEASE="latest/"
 # check if running piped from curl
 if [ -z ${BASH_SOURCE} ]; then
   echo "* Downloading install yaml..."
-  rm -rf /tmp/esindex-operator && mkdir -p /tmp/esindex-operator
-  cd /tmp/esindex-operator
-  curl -sLJO https://github.com/IBM/esindex-operator/archive/master.zip
-  unzip -qq esindex-operator-master.zip
-  cd esindex-operator-master
+  rm -rf /tmp/admission-control && mkdir -p /tmp/admission-control
+  cd /tmp/admission-control
+  curl -sLJO https://github.com/IBM/admission-control/archive/master.zip
+  unzip -qq admission-control-master.zip
+  cd admission-control-master
   SCRIPTS_HOME=${PWD}/hack
 else
   SCRIPTS_HOME=$(dirname ${BASH_SOURCE})
 fi
-
-# check dependencies
-#${SCRIPTS_HOME}/check-prerequisites.sh
 
 # install the operator
 kubectl apply -f ${SCRIPTS_HOME}/../releases/${RELEASE}
