@@ -33,6 +33,7 @@ View logs to confirm installation:
     ```
     kubectl logs --follow admission-control-0 -n  admission-control
     ```
+    
     The log would show something like this:
     
     ```
