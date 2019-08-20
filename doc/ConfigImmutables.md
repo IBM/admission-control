@@ -31,7 +31,7 @@ Or download and edit [002_rbac_role.yaml](https://github.com/IBM/admission-contr
 Admission Control reads the immutable rules from a ConfigMap named `immutables-config`. The rules are in JSON format, see [007_immutable_configmap.yaml](https://github.com/IBM/admission-control/blob/master/releases/v0.1.0/007_immutable_configmap.yaml). A rule contains four elements: `kind`, `group` (APIGroup), `version` (APIVersion), and `immutables`. The `immutables` is an array of spec parameter pathnames. The listing below shows the example for [IBM Cloud Service CRD](https://github.com/IBM/cloud-operators) and [IBM Cloud EsIndex CRD](https://github.com/IBM/esindex-operator).
 
 ![](https://github.com/IBM/admission-control/blob/master/doc/images/immutable-rules.png)
-        https://github.com/IBM/admission-control/blob/master/doc/images/immutable-rules.png
+
  
 Download and edit [007_immutable_configmap.yaml](https://github.com/IBM/admission-control/blob/master/releases/v0.1.0/007_immutable_configmap.yaml) with your immutable rules, then run the following command to apply the change.
 
