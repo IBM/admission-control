@@ -7,13 +7,13 @@ The project provides a k8s admission control webhook server to perform custom va
 
 ## 1. Install
 
-To install admission control, run the following script:
+Run the following command to install admission control:
 
 ```
 curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/install.sh | bash 
 ```
 
-This will install the latest admission control server on your cluster under namespace `admission-control`. The following table lists all the resources deployed including those for webhook registration and for validation rule configurations. 
+It will install the latest admission control server on your cluster under namespace `admission-control`. The table below lists all the resources deployed including those for webhook registration and for validation rule configurations. 
 
 |Name  |      Kind      |  Namespace | Comment |
 |----------|:-------------:|:------:|-----------|
@@ -24,10 +24,12 @@ This will install the latest admission control server on your cluster under name
 | labels-config | ConfigMap | admission-control | Rules for label validation |
 | immutables-config | ConfigMap | admission-control | Rules for immutable validation |
 | admission-webhook-certs | Secret | admission-control | Certs for secure connection between admission control and k8s APIServcer |
-| validate-wh-config | ConfigMap | admission-control | Validating webhook registration data |
-| mutate-wh-config | ConfigMap | admission-control | Mutating webhook registration data |
+| validate-wh-config | ConfigMap | admission-control | Validating webhook config data |
+| mutate-wh-config | ConfigMap | admission-control | Mutating webhook config data |
 | admission-control-service | Service | admission-control |  |
-| admission-control  | StatefulSet | admission-control |  |
+| admission-control  | StatefulSet | admission-control | Admission control server |
+| validating-webhook | ValidatingWebhookConfiguration |  | Validating webhook registered with k8s API server by admission control server |
+| mutating-webhook | MutatingWebhookConfiguration |  | Mutating webhook registered with k8s API server by admission control server |
 
 View logs to confirm installation:
 
@@ -56,13 +58,23 @@ The log would show something like this:
 
 ## 2. Uninstall
 
-To uninstall admission control, run the following script:
+Run the following command to uninstall admission control:
 
 ```
 curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/uninstall.sh | bash 
 ```
 
-## 3. Configuration
+## 3. Configure Admission Control Rules
+
+There are three steps in general.
+
+1. Grant the admission control server the permission to access the resource kinds
+
+2. Register the resource kind with k8s API server for admission approval
+
+3. Create and apply your admission control rules
+
+See the following links for configuration details for each validation features:
 
 * **Validation for Immutables** See [Configuration for Immutables](https://github.com/IBM/admission-control/blob/master/doc/ConfigImmutables.md) for details.
 
