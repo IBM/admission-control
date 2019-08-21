@@ -70,9 +70,9 @@ There are three steps in general.
 
 1. Grant the admission control server the permission to access the resource kinds
 
-2. Register the resource kind with k8s API server for admission approval
+2. Register the resource kinds with k8s API server for admission approval
 
-3. Create and apply your admission control rules
+3. Create admission rules that will be enforced by admission control
 
 See the following links for configuration details for each validation features:
 
