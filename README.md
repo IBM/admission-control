@@ -13,7 +13,7 @@ Run the following command to install admission control:
 curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/install.sh | bash 
 ```
 
-It will install the latest admission control server on your cluster under namespace `admission-control`. The table below lists all the resources deployed including those for webhook registration and for validation rule configurations. 
+It will install the latest admission control server on your cluster under namespace `admission-control`. The table below lists all the resources deployed including the default configuration for webhook registrations and validation rules for [IBM Cloud Service CRDs](https://github.com/IBM/cloud-operators). Section 3 below explains how to update the configuration to work with your own CRDs.
 
 |Name  |      Kind      |  Namespace | Comment |
 |----------|:-------------:|:------:|-----------|
@@ -64,22 +64,22 @@ Run the following command to uninstall admission control:
 curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/uninstall.sh | bash 
 ```
 
-## 3. Configure Admission Control Rules
+## 3. Configure Admission Control for Your CRDs
 
-There are three steps in general.
+There are three steps.
 
-1. Grant the admission control server the permission to access the resource kinds
+1. Grant the admission control server the permission to access your CRD resources
 
-2. Register the resource kinds with k8s API server for admission approval
+2. Register with k8s API server for admission approval
 
 3. Create admission rules that will be enforced by admission control
 
 See the following links for configuration details for each validation features:
 
-* **Validation for Immutables** See [Configuration for Immutables](https://github.com/IBM/admission-control/blob/master/doc/ConfigImmutables.md) for details.
+* **[Validation for Immutables](https://github.com/IBM/admission-control/blob/master/doc/ConfigImmutables.md)**
 
-* **Validation for Exclusions**
+* **Validation for Exclusions** (coming soon)
    
-* **Validation for Labels**
+* **Validation for Labels** (coming soon)
 
 
