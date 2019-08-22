@@ -5,6 +5,15 @@ TAG ?= 0.1.0
 
 all: test manager
 
+# Install dependencies
+deps:
+	go get golang.org/x/lint/golint
+	go get -u github.com/apg/patter
+	go get -u github.com/wadey/gocovmerge
+	go get -u github.com/alecthomas/gometalinter
+	gometalinter --install
+	pip install --user PyYAML
+
 # Run tests
 test: generate fmt vet manifests
 	go test ./pkg/... ./cmd/... -coverprofile cover.out
@@ -55,7 +64,7 @@ docker-build:
 
 # Push the docker image
 docker-push:
-#	echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-	docker login -u "${DOCKER_USERNAME}" --password "${DOCKER_PASSWORD}"
+	echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+#	docker login -u "${DOCKER_USERNAME}" --password "${DOCKER_PASSWORD}"
 	docker push ${IMG}:${TAG}
 	
