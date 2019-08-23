@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: immutables-config
-  namespace: admission-control
-  labels:
-    app.kubernetes.io/name: admission-control
-data:
-  immutables: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.BindingFrom.Name","Spec.IndexName","Spec.NumberOfShards","Spec.NumberOfReplicas"]},{"kind":"Service","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.Plan","Spec.ServiceClass"]},{"kind":"Binding","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.Role","Spec.ServiceNamespace","Spec.ServiceName"]}]'

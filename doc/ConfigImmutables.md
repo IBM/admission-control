@@ -84,12 +84,12 @@ Use `kubectl edit` command to update the `webhooks.rules` by adding a new rule (
  
 ## 3. Specify Immutable Rules  
     
-Admission Control reads the immutable rules from a ConfigMap named `immutables-config`. The rules are stored in JSON format, see [007_immutable_configmap.yaml](https://github.com/IBM/admission-control/blob/master/releases/v0.1.0/007_immutable_configmap.yaml) for example. A rule contains four elements: `kind`, `group` (APIGroup), `version` (APIVersion), and `immutables`. The `immutables` is an array of spec parameter pathnames. The listing below shows example immutable rules for [IBM Cloud Service CRD](https://github.com/IBM/cloud-operators) and [IBM Cloud EsIndex CRD](https://github.com/IBM/esindex-operator).
+Admission Control reads the immutable rules from a ConfigMap named `immutables-config`. The rules are stored in JSON format, see [005_immutable_configmap.yaml](https://github.com/IBM/admission-control/blob/master/releases/v0.1.0/007_immutable_configmap.yaml) for example. A rule contains four elements: `kind`, `group` (APIGroup), `version` (APIVersion), and `immutables`. The `immutables` is an array of spec parameter pathnames. The listing below shows example immutable rules for [IBM Cloud Service CRD](https://github.com/IBM/cloud-operators) and [IBM Cloud EsIndex CRD](https://github.com/IBM/esindex-operator).
 
 ![](https://github.com/IBM/admission-control/blob/master/doc/images/immutable-rules.png)
 
  
-Download [007_immutable_configmap.yaml](https://github.com/IBM/admission-control/blob/master/releases/v0.1.0/007_immutable_configmap.yaml), and edit the value of `data` with your immutable rules. Run the following command to apply the change. The admission control will pick up the change automatically, no restart is needed.
+Download [005_immutable_configmap.yaml](https://github.com/IBM/admission-control/blob/master/releases/v0.1.0/007_immutable_configmap.yaml), and edit the value of `data` with your immutable rules. Run the following command to apply the change. The admission control will pick up the change automatically, no restart is needed.
 
 ```
    $ kubectl apply -f 007_immutable_configmap.yaml

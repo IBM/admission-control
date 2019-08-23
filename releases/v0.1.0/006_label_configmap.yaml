@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: labels-config
-  namespace: admission-control
-  labels:
-    app.kubernetes.io/name: admission-control
-data:
-  labels: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","labels":["ibmcloud.ibm.com/instance","ibmcloud.ibm.com/name"]}]'
