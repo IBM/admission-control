@@ -47,6 +47,13 @@ fmt:
 vet:
 	go vet ./pkg/... ./cmd/...
 
+# Run golint
+lint:
+	golint -set_exit_status=true ./pkg/...
+
+# Run lint all
+lintall: fmt lint vet
+
 # Generate code
 generate:
 ifndef GOPATH
@@ -68,7 +75,4 @@ docker-push:
 #	docker login -u "${DOCKER_USERNAME}" --password "${DOCKER_PASSWORD}"
 	docker push ${IMG}:${TAG}
 	
-lintall: fmt lint vet
 
-lint:
-	golint -set_exit_status=true pkg/

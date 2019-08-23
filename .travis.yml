@@ -5,7 +5,7 @@ dist: xenial
 services:
   - docker
 
-go_import_path: github.com/ibm/esindex-operator
+go_import_path: github.com/ibm/admission-control
 
 before_script:
   - make deps
