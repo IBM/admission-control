@@ -70,9 +70,8 @@ docker-build:
 	sed -i'' -e 's@image: .*@image: '"${IMG}:${TAG}"'@' ./config/default/manager_image_patch.yaml
 
 # Push the docker image
-docker-push:
+docker-push: docker-build
 	echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 #	docker login -u "${DOCKER_USERNAME}" --password "${DOCKER_PASSWORD}"
 	docker push ${IMG}:${TAG}
 	
-
