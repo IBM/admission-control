@@ -47,6 +47,13 @@ fmt:
 vet:
 	go vet ./pkg/... ./cmd/...
 
+# Run golint
+lint:
+	golint -set_exit_status=true ./pkg/...
+
+# Run lint all
+lintall: fmt lint vet
+
 # Generate code
 generate:
 ifndef GOPATH
@@ -63,12 +70,8 @@ docker-build:
 	sed -i'' -e 's@image: .*@image: '"${IMG}:${TAG}"'@' ./config/default/manager_image_patch.yaml
 
 # Push the docker image
-docker-push:
+docker-push: docker-build
 	echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 #	docker login -u "${DOCKER_USERNAME}" --password "${DOCKER_PASSWORD}"
 	docker push ${IMG}:${TAG}
 	
-lintall: fmt lint vet
-
-lint:
-	golint -set_exit_status=true pkg/
