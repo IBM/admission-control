@@ -77,8 +77,8 @@ spec:
       containers:
       - command:
         - /root/manager
-#        image: cloudoperators/admission-control:0.1.0
-        image: lauratest/admission-control:0.1.0
+        image: cloudoperators/admission-control:0.1.0
+#        image: lauratest/admission-control:0.1.0
         imagePullPolicy: Always
         name: manager
         env:
