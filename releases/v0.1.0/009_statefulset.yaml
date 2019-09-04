@@ -25,6 +25,7 @@ spec:
       - command:
         - /root/manager
         image: cloudoperators/admission-control:0.1.0
+#        image: lauratest/admission-control:0.1.0
         imagePullPolicy: Always
         name: manager
         env:
@@ -44,6 +45,9 @@ spec:
         # enable immutable validation in admission control
         - name: ADMISSION_CONTROL_IMMUTABLES
           value: "true"
+        # enable mutal exclusive validation in admission control
+        - name: ADMISSION_CONTROL_MUTUAL_EXCLUSIVES
+          value: "true"
          # enable mutation webhook
         - name: ADMISSION_CONTROL_MUTATION
           value: "true"            
@@ -62,11 +66,8 @@ spec:
         - name: cert
           mountPath: /tmp/cert
           readOnly: true
-        - name: config-labels-volume
-          mountPath: /etc/config/labels
-          readOnly: true
-        - name: config-immutables-volume
-          mountPath: /etc/config/immutables
+        - name: config-validation-rules-volume
+          mountPath: /etc/config/validation
           readOnly: true
         - name: config-validate-wh-volume
           mountPath: /etc/config/validate-wh
@@ -81,12 +82,9 @@ spec:
         secret:
           defaultMode: 420
           secretName: admission-webhook-certs
-      - name: config-labels-volume
+      - name: config-validation-rules-volume
         configMap:
-          name: labels-config
-      - name: config-immutables-volume
-        configMap:
-          name: immutables-config
+          name: validation-rules-config
       - name: config-validate-wh-volume
         configMap:
           name: validate-wh-config

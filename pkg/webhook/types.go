@@ -27,10 +27,13 @@ const validatingWebhookName = "validating-webhook"
 const mutatingWebhookName = "mutating-webhook"
 
 // LabelsConfigPath is path where the ConfigMap is mounted for the required labels
-const LabelsConfigPath = "/etc/config/labels/labels"
+const LabelsConfigPath = "/etc/config/validation/labels"
 
 // ImmutablesConfigPath is path where the ConfigMap is mounted for the immutable specifiction fields
-const ImmutablesConfigPath = "/etc/config/immutables/immutables"
+const ImmutablesConfigPath = "/etc/config/validation/immutables"
+
+// ExclusivesConfigPath is path where the ConfigMap is mounted for the mutual exclusive specifiction fields
+const ExclusivesConfigPath = "/etc/config/validation/exclusives"
 
 //LabelsConfig - a struct for required labels per resource type
 type LabelsConfig struct {
@@ -38,10 +41,18 @@ type LabelsConfig struct {
 	Labels []string `json:"labels,omitempty"`
 }
 
-//ImmutablesConfig - a struct for immutables
+//ImmutablesConfig - a struct for immutable rules
 type ImmutablesConfig struct {
 	Kind       string   `json:"kind"`
 	Immutables []string `json:"immutables,omitempty"`
+}
+
+//ExclusivesConfig - a struct for mutual exclusion rules
+type ExclusivesConfig struct {
+	Kind       string     `json:"kind"`
+	Group      string     `json:"group"`
+	Version    string     `json:"version,omitempty"`
+	Exclusives [][]string `json:"exclusives,omitempty"`
 }
 
 //Dependent identifies a dependent resource in cluster

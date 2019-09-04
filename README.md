@@ -1,7 +1,9 @@
 # Admission Control for k8s CRDs
 The project provides a k8s admission control webhook server to perform custom validations of resource requests. Specifically it provides the following capabilities.
 
-* **Validation of Immutables** Some resource kinds may have contraints in whether their specs can be dynamically updated. For example database related CRDs may limit the change to storage allocation; cloud services may not support dynamic subscription plan upgrade/downgrade due to provisioning constraints. **Validation of immutables** allows you to specify immutability of CRD spec parameters. The admission control enforces these immutable rules by reject any requests that violate the rulels. 
+* **Validation of Immutables** Some resource kinds may have contraints in whether their specs can be dynamically updated. For example database related CRDs may limit the change to storage allocation; cloud services may not support dynamic subscription plan upgrade/downgrade due to provisioning constraints. **Validation of immutables** allows you to specify immutability of CRD spec parameters. The admission control enforces these immutable rules by rejecting any requests that violate the rulels. 
+
+* **Validation of Mutual Exclusions** Some custom resource kinds may have optional specification parameters that are mutually exclusive. For example custom resources like [Event Streams Topics](https://github.com/IBM/event-streams-topic) and [Elasticsearch Indices](https://github.com/IBM/esindex-operator) support mutiple credential source options in specification. These options are mutually exclusive, and only one of them should be present in a yaml request. **Validation of Mutual Exclusion** allows you to specify rules for mutually exclusive CRD spec parameters. The admission control enforces the rules by rejecting any requests that contain mutually exclusive specs with a message for correction. 
 
 * **Validation of Labels** validates the required labels according to user specified labeling rules. The admission control enforces the rules by rejecting any requests that violate the rulles.
 
@@ -21,8 +23,7 @@ It will install the latest admission control server on your cluster under namesp
 | admission-control |   ServiceAccount  | admission-control |  |
 | admission-control-role | ClusterRole | - | Access permissions for admission control |
 | admission-control-rolebinding | ClusterRoleBinding | - |  |
-| labels-config | ConfigMap | admission-control | Rules for label validation |
-| immutables-config | ConfigMap | admission-control | Rules for immutable validation |
+| validation-rules-config | ConfigMap | admission-control | Validation rules for immutables, mutual exclusives, and labels |
 | admission-webhook-certs | Secret | admission-control | Certs for secure connection between admission control and k8s APIServcer |
 | validate-wh-config | ConfigMap | admission-control | Validating webhook config data |
 | mutate-wh-config | ConfigMap | admission-control | Mutating webhook config data |
@@ -72,7 +73,7 @@ There are three steps.
 
 2. Register with k8s API server for admission approval
 
-3. Create admission rules that will be enforced by admission control
+3. Create admission rules to be executed by admission control
 
 See the following links for configuration details for each validation features:
 
@@ -81,5 +82,4 @@ See the following links for configuration details for each validation features:
 * **Validation for Exclusions** (coming soon)
    
 * **Validation for Labels** (coming soon)
-
 

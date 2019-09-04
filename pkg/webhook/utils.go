@@ -32,6 +32,22 @@ func getAdmissionWhConfig(pathname string) (AdmissionWhConfig, error) {
 
 }
 
+// getExclusivesConfig reads exclusives from configmap
+func getExclusivesConfig(pathname string) ([]ExclusivesConfig, error) {
+
+	var exclusivesConf []ExclusivesConfig
+	dat, err := ioutil.ReadFile(pathname)
+	if err != nil {
+		logt.Error(err, "Exclusives config read file error")
+		return exclusivesConf, err
+	}
+	if err := json.Unmarshal(dat, &exclusivesConf); err != nil {
+		logt.Error(err, "Exclusives config unmarshal error")
+		return exclusivesConf, err
+	}
+	return exclusivesConf, nil
+}
+
 // getImmutablesConfig reads immutables from configmap
 func getImmutablesConfig(pathname string) ([]ImmutablesConfig, error) {
 
@@ -41,13 +57,11 @@ func getImmutablesConfig(pathname string) ([]ImmutablesConfig, error) {
 		logt.Error(err, "Immutable config read file error")
 		return immutablesConf, err
 	}
-
 	if err := json.Unmarshal(dat, &immutablesConf); err != nil {
 		logt.Error(err, "Immutables config unmarshal error")
 		return immutablesConf, err
 	}
 	return immutablesConf, nil
-
 }
 
 // getLabelsConfig reads required labels  from configmap

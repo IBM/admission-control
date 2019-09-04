@@ -102,6 +102,24 @@ func (v *AdmissionValidator) Handle(ctx context.Context, req types.Request) type
 		}
 	}
 
+	//validate mutual exclusives
+	if os.Getenv("ADMISSION_CONTROL_MUTUAL_EXCLUSIVES") == "true" {
+		//parse request sepc and convert to a flat map
+		logt.Info("check exclusives", "operation", req.AdmissionRequest.Operation)
+		allowed, message := v.validateExclusives(req.AdmissionRequest.Kind.Kind, req.AdmissionRequest.Object.Raw)
+		result := &metav1.Status{
+			Message: message,
+		}
+		if allowed == false {
+			return types.Response{
+				Response: &admissionv1beta1.AdmissionResponse{
+					Allowed: allowed,
+					Result:  result,
+				},
+			}
+		}
+	}
+
 	logt.Info("! AdmissionReview is approved")
 	return types.Response{
 		Response: &admissionv1beta1.AdmissionResponse{
@@ -201,16 +219,12 @@ func (v *AdmissionValidator) validateImmutables(kind string, admobj []byte) (boo
 				return false, "failed to retrieve the existing resource"
 			}
 			existingspec, _ := Parse("spec", existingobj.Object["spec"].(map[string]interface{}))
-			//logt.Info("flatterned existingspec json map", "spec", fmt.Sprintf("%v", existingspec))
 
 			// compare the new spec with the existing for immutables
 			for _, item := range immutables {
-				logt.Info("immutable", "item", item)
 				itemlower := strings.ToLower(item)
 				//if !reflect.DeepEqual(spec[itemlower], existingspec[itemlower]) { //!!!this would go panic if the item does not exist.
 				if spec[itemlower] != existingspec[itemlower] {
-					//logt.Info("existing", "itemlower", fmt.Sprintf("%v", existingspec[itemlower]), "kind", reflect.TypeOf(existingspec[itemlower]).Kind())
-					//logt.Info("new     ", "itemlower", fmt.Sprintf("%v", spec[itemlower]), "kind", reflect.TypeOf(spec[itemlower]).Kind())
 					/* It appears a bug on kube-apiserver side that formats a int64 data kind (as defined in crd yaml) to float in admission review request.
 					This makes the condition above to be true mistakenly when the existing and the new have the same value.
 					As a workaround, convert them to string and then compare */
@@ -239,4 +253,56 @@ func (v *AdmissionValidator) validateImmutables(kind string, admobj []byte) (boo
 		logt.Info("reject the request", "message", message)
 	}
 	return allowed, message
+}
+
+// validateExclusives validates if request has mutaul exclucsive spec atrributes
+func (v *AdmissionValidator) validateExclusives(kind string, admobj []byte) (bool, string) {
+	var message string
+	var exclusives [][]string
+	var count int
+	var exclusiveItems []string
+
+	//parse request sepc and convert to a flat map
+	var req map[string]interface{}
+	json.Unmarshal(admobj, &req)
+	str := strings.Split(req["apiVersion"].(string), "/")
+	group, version := str[0], str[1]
+	spec, _ := Parse("spec", req["spec"].(map[string]interface{}))
+	logt.Info("flatterned spec json map", "spec", fmt.Sprintf("%v", spec))
+
+	// get exclusive rules from configmap
+	exclusivesConfig, err := getExclusivesConfig(ExclusivesConfigPath)
+	if err != nil {
+		return true, "no exclusives found"
+	}
+
+	for _, exconfig := range exclusivesConfig {
+		if kind == exconfig.Kind && group == exconfig.Group && (version == exconfig.Version || exconfig.Version == "") {
+			exclusives = exconfig.Exclusives
+			logt.Info("applicable exclusive rules", "kind", kind, "exclusive rules", fmt.Sprintf("%v", exclusives))
+
+			// check each exclusive rule
+			for _, exc := range exclusives {
+				count = 0
+				for _, item := range exc {
+					itemlower := strings.ToLower(item)
+					if value, ok := spec[itemlower]; ok {
+						jsonobj, _ := value.(map[string]interface{})
+						if len(jsonobj) > 0 {
+							count++
+							exclusiveItems = append(exclusiveItems, itemlower)
+						}
+					}
+				}
+				if count > 1 {
+					logt.Info("found mutual exclusives and reject request", "count", count, "exclusives", fmt.Sprintf("%v", exclusiveItems))
+					message = "These specs are mutually exclusive. Please specify only one of them and resubmit your request. \n" + fmt.Sprintf("%v", exclusiveItems)
+					return false, message
+				}
+				count = 0
+				exclusiveItems = nil
+			}
+		}
+	}
+	return true, ""
 }
