@@ -9,7 +9,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: validation-rules-config
-  namespace: admission-control
+  namespace: system
   labels:
     app.kubernetes.io/name: admission-control
 data:
@@ -55,7 +55,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: admission-control
-  namespace: admission-control
+  namespace: system
   labels:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
