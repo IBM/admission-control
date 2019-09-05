@@ -67,7 +67,7 @@ curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/uni
 
 ## 3. Configure Admission Control for Your CRDs
 
-There are three steps.
+There are mainly three configuration updates to customize the admission control for your CRDs.
 
 1. Grant the admission control server the permission to access your CRD resources
 
@@ -75,11 +75,11 @@ There are three steps.
 
 3. Create admission rules to be executed by admission control
 
-See the following links for configuration details for each validation features:
+Please follow [How to Configure Admission Control for Your CRDs](https://github.com/IBM/admission-control/blob/master/doc/customization.md) for detailed instructions for each validation features:
 
-* **[Validation for Immutables](https://github.com/IBM/admission-control/blob/master/doc/ConfigImmutables.md)**
+* Validation for Immutables
 
-* **Validation for Exclusions** (coming soon)
+* Validation for Mutaul Exclusions
    
-* **Validation for Labels** (coming soon)
+* Validation for Labels
 
