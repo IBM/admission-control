@@ -75,11 +75,11 @@ There are mainly three configuration updates to customize the admission control 
 
 3. Create admission rules to be executed by admission control
 
-Please follow this [link](https://github.com/IBM/admission-control/blob/master/doc/customization.md) for configuration details for each validation features:
+Please follow [How to Configure Admission Control for Your CRDs](https://github.com/IBM/admission-control/blob/master/doc/customization.md) for detailed instructions for each validation features:
 
-* **Validation for Immutables**
+* Validation for Immutables
 
-* **Validation for Mutaul Exclusions**
+* Validation for Mutaul Exclusions
    
-* **Validation for Labels**
+* Validation for Labels
 
