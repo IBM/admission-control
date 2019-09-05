@@ -3,14 +3,14 @@
 
 ## 1. Download Admission Control YAML Files 
 
-The configuration and deployment of the admission control is specified in a collection of yaml files. Create a directory on your local machine, and run the following command to download these yaml files from github.com. 
+The configuration and deployment of the admission control is specified in a collection of yaml files. Run the following command to create a directory on your local machine, then download these yaml files from github.com. 
 
 ```
 mkdir admission-control
 cd admission-control
 curl -sL https://raw.githubusercontent.com/IBM/admission-control/master/hack/downloadrelease.sh | bash 
 ```
-The download yaml files, as list below, reside in `releases/v0.1.0/` directory. Among them three files, shown in **bold font**, need be updated for your CRDs. The sections below explain in details.
+The download yaml files, as listed below, reside in `releases/v0.1.0/` directory. Among them three files, shown in **bold font**, need to be updated for your CRDs. The sections below explain in details.
 
 |YAML File  |      Comment      | 
 |-----------|-------------------|
@@ -167,7 +167,15 @@ kubectl get validatingwebhookconfiguration
 
 ## 6. Test
 
-Now you may test the admission control, for example, for immutable validation by 1) creating a new resource (e.g. xxx.yaml) of your CRD knid, 2) updating the value of an immutable spec in the yaml file, and 3) apply the update. The update request should receive a rejection from k8s API server. 
+Now you may test the admission control, for example, for immutable validation.
+
+1. create a new resource (e.g. xxx.yaml) of your CRD knid
+
+2. update the value of an immutable spec in the yaml file
+
+3. apply the update yaml. 
+
+The update request should receive a rejection from k8s API server. 
 
 The list bellow shows an example rejection response where the request attempted to change the plan of an elasticsearch resource (IBM Cloud Service). The last line shows the reason for rejection. 
 
