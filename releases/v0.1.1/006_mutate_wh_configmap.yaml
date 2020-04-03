@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mutate-wh-config
+  namespace: admission-control
+  labels:
+    app.kubernetes.io/name: admission-control
+data:
+#  config: '{"name": "mutating-wh-config", "rules": [{"operations": [], "apiGroups": [], "apiVersions": [], "resources": []}]}'
+  config: '{"name": "mutating-webhook", "rules": [{"operations": ["CREATE", "UPDATE"], "apiGroups": ["ibmcloud.ibm.com"], "apiVersions": ["*"], "resources": ["*"]},{"operations": ["CREATE"], "apiGroups": ["ibmcloud.ibm.com"], "apiVersions": ["v1alpha1"], "resources": ["bucket"]}]}'

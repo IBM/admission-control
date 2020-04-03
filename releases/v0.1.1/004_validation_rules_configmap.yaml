@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: validation-rules-config
+  namespace: admission-control
+  labels:
+    app.kubernetes.io/name: admission-control
+data:
+  exclusives: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","exclusives":[["Spec.BindingFrom","Spec.esURIComposed"]]}]'
+  immutables: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.BindingFrom.Name","Spec.IndexName","Spec.NumberOfShards","Spec.NumberOfReplicas"]},{"kind":"Service","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.Plan","Spec.ServiceClass"]},{"kind":"Binding","group":"ibmcloud.ibm.com","version":"v1alpha1","immutables":["Spec.Role","Spec.ServiceNamespace","Spec.ServiceName"]}]'
+  labels: '[{"kind":"EsIndex","group":"ibmcloud.ibm.com","version":"v1alpha1","labels":["ibmcloud.ibm.com/instance","ibmcloud.ibm.com/name"]}]'
+
