@@ -112,7 +112,7 @@ func startWebhookServer(mgr manager.Manager) error {
 		"secret name", secretName, "service name", serviceName, "cert dir", certDir)
 
 	svr, err := webhook.NewServer(webhookServerName, mgr, webhook.ServerOptions{
-		Port:    443,
+		Port:    8888,
 		CertDir: certDir,
 		BootstrapOptions: &webhook.BootstrapOptions{
 			Secret: &k8types.NamespacedName{
